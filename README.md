@@ -8,7 +8,7 @@ https://youtu.be/JvFvCYFYpzU?si=Vho8MM5Dy7YQk53E
 
 ![image](https://github.com/user-attachments/assets/7d5e2373-c9e7-4c0c-8363-30c13ce145f0)
 
-Two llm models used distillbart and mistral instruct from free tier hugging face api
+# # Two llm models used distillbart and mistral instruct from free tier hugging face api
 
 
 ## Core Approach & Design
