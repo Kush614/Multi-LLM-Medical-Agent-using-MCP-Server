@@ -7,47 +7,59 @@ This project implements a Multi-LLM Agent system in Python designed to answer me
 
 
 # Workflow Stages as Depicted in the Diagram:
-User Interaction & Initial Query:
-(1. Medical Question): The process begins when the User submits a medical question, which is received by the Main Agent.
-Query Processing & Information Retrieval (Agent "Gore" Logic - likely "Core" Logic):
-(2. Refined Question to LLM1): The Main Agent sends the original question to LLM1 (labeled "Snippet" but acting as Query Refinement). This LLM, interacting with Hugging Face (LLM2: Mistral+Instruct), aims to produce a more effective search query. (Note: The diagram's "LLM2" label on the Hugging Face box for this step seems to refer to the model type, not the LLM stage number in a multi-stage pipeline).
-(3. Original Query / Refined Query to MCP Servers): The Main Agent uses the processed query.
-(4. Web Search Query): The query is sent to the MCP Server: Web Search.
-This server queries DuekDukGo (DuckDuckGo), which searches Infenet Web Pages (Internet Web Pages).
-(4b. Formatted Web Results): The Web Search MCP server returns formatted results to the Main Agent and also directly to the Final Output stage in the diagram.
-The Main Agent also queries the NCB PubMed (NCBI PubMed) MCP server.
-This server queries the PubMed Database.
-(The diagram implies PubMed results are processed internally by the Main Agent before synthesis).
-Context Processing & Answer Synthesis (via External Services & APIs):
-Web Path Synthesis:
-(9. Refined Web Snippets from LLM1 & 4b. Formatted "Oreta Quesign+" (JSON) from Web Search): These inputs are fed into LLM2 (Answer Synthesis for Web). (The label "Oreta Quesign+" is specific to the diagram and its meaning is assumed to be formatted web data).
-This LLM2 interacts with Hugging Face (labeled LLM3: DISTILBART-CNN) to produce (9a. Synthesized Answer (Web) / Summarized Web Snippets).
-Alternative/Additional Web Path Synthesis (Implied by diagram complexity):
-(6a. Formatted Web Context + Original Question): This data stream goes to a Hugging Face box labeled (LLM2: Mistral+Instruct), suggesting another synthesis step or an alternative path for web results.
-PubMed Path Synthesis:
-(7b. Synthesized Answer Context / Original Question): Context from PubMed, along with the original question, is sent to LLM3 (Answer Synthesis for PubMed).
-This LLM3 interacts with Hugging Face (labeled LLM3: Answer Synthesis) to produce (11b. Synthesized Answer (PubMed)).
-Final Output:
-(10. Final Output (Separate Answers + Sources)): The Main Agent consolidates the various synthesized answers and presents them, along with their sources, back to the User.
-Important Notes on Diagram Interpretation vs. Implemented Code:
-LLM Naming & Function: The diagram uses "LLM1", "LLM2", and "LLM3" for the diamond-shaped logic blocks within the agent, but the corresponding Hugging Face API boxes have labels like "LLM2: Mistral+Instruct" and "LLM3: DISTILBART-CNN". This can be confusing.
-The implemented code has a clearer three-stage LLM pipeline:
-LLM1 (Query Refinement): Uses a model like Mistral-Instruct.
-LLM2 (Snippet Summarization): Uses a model like DistilBART-CNN for both Web and PubMed snippets if enabled.
-LLM3 (Answer Synthesis): Uses a model like Mistral-Instruct to synthesize separate answers for Web and PubMed contexts.
-The diagram visually separates the synthesis for web and PubMed into what it calls "LLM2" and "LLM3" (the diamond shapes), but the associated Hugging Face models might not perfectly align with the code's summarization vs. synthesis roles for those stages. For instance, DistilBART-CNN is typically a summarizer.
-"Agent Gore Logic": This is understood to be a typo for "Agent Core Logic."
-MCP Server File Names in Diagram:
-The Web Search server is incorrectly associated with pub_search_server.py in one of its labels in the diagram; it should be web_search_server.py.
-The PubMed server is correctly pubmed.search.server.py.
-Unclear Labels: The label "4b. Formatted Oreta Quesign+ (JSON)" is specific to the diagram and its precise meaning in the data flow is inferred as formatted web data.
-Return Path from PubMed MCP: The diagram doesn't explicitly show a "formatted results" arrow from the PubMed MCP server back to the Main Agent in the same way it does for the Web Search server (arrow 4b), but this data flow is essential and implied for the PubMed synthesis path.
-Simplified Interpretation of the Diagram's Intent:
-Despite some labeling inconsistencies when compared directly to the final code structure, the diagram aims to show the following general flow:
-The user's medical question is processed by a Main Agent. This agent may use an LLM to refine the query. It then retrieves information from both Web Search (via DuckDuckGo) and PubMed. The retrieved information, possibly further processed or summarized by other LLM(s) (like DistilBART-CNN for summarization, and Mistral-Instruct for synthesis), is used to generate separate answers based on web context and PubMed context. These distinct answers, with their sources, are then presented to the user. The core idea of using multiple LLMs for different parts of the process and interacting with external data sources is evident.
-For the most accurate representation, the diagram would ideally be updated to directly reflect the code's LLM staging (LLM1: Refine, LLM2: Summarize, LLM3: Synthesize per source) and model types used at each stage.
 
+*   **1. User Interaction & Initial Query:**
+    *   **(1. Medical Question):** The process begins when the **User** submits a medical question.
+    *   This question is received by the **Main Agent**.
 
+*   **2. Query Processing & Information Retrieval (Agent "Gore" Logic - likely "Core" Logic):**
+    *   **(2. Refined Question to LLM1):** The Main Agent sends the original question to **LLM1 (labeled "Snippet" but acting as Query Refinement)**. This LLM, interacting with **Hugging Face (labeled in diagram as "LLM2: Mistral+Instruct" for the API call)**, aims to produce a more effective search query.
+    *   **(3. Original Query / Refined Query to MCP Servers):** The Main Agent uses the processed query for searches.
+    *   **(4. Web Search Query):** The query is sent to the **MCP Server: Web Search**.
+        *   This server queries **DuekDukGo (DuckDuckGo)**, which searches **Infenet Web Pages (Internet Web Pages)**.
+        *   **(4b. Formatted Web Results):** The Web Search MCP server returns formatted results (JSON) to the Main Agent. These results are used for further processing and contribute to the final output.
+    *   The Main Agent also queries the **NCB PubMed (NCBI PubMed) MCP server**.
+        *   This server queries the **PubMed Database**.
+        *   *(Diagram Note: An explicit arrow showing formatted results returning from the PubMed MCP server to the Main Agent, similar to 4b for web search, is implied but not explicitly drawn).*
+
+*   **3. Context Processing & Answer Synthesis (via External Services & APIs):**
+    *   **Web Path Synthesis in Diagram:**
+        *   Inputs like **(9. Refined Web Snippets from LLM1 output)** and **(4b. Formatted "Oreta Quesign+" (JSON) from Web Search)** are shown as inputs to **LLM2 (Answer Synthesis for Web)** in the diagram. *(The label "Oreta Quesign+" is specific to the diagram).*
+        *   This LLM2 (diamond shape) interacts with **Hugging Face (labeled in diagram as "LLM3: DISTILBART-CNN" for the API call)** to produce **(9a. Synthesized Answer (Web) / Summarized Web Snippets)**.
+    *   **Alternative/Additional Web Path Synthesis (Implied by diagram):**
+        *   A separate data stream **(6a. Formatted Web Context + Original Question)** goes to a Hugging Face box labeled **(LLM2: Mistral+Instruct)**, suggesting another synthesis step for web results using a Mistral-type model.
+    *   **PubMed Path Synthesis in Diagram:**
+        *   **(7b. Synthesized Answer Context / Original Question):** Context derived from PubMed results, along with the original question, is sent to **LLM3 (Answer Synthesis for PubMed)** (diamond shape).
+        *   This LLM3 interacts with **Hugging Face (labeled "LLM3: Answer Synthesis" for the API call)** to produce **(11b. Synthesized Answer (PubMed))**.
+
+*   **4. Final Output:**
+    *   **(10. Final Output (Separate Answers + Sources)):** The Main Agent consolidates the synthesized answers from the web and PubMed processing paths.
+    *   This **Final Output**, containing separate answers and their respective sources, is presented back to the **User**.
+
+**Important Notes on Diagram Interpretation vs. Implemented Code:**
+
+*   **LLM Naming & Function:**
+    *   The diagram uses "LLM1", "LLM2", and "LLM3" for the diamond-shaped logic blocks. The corresponding Hugging Face API boxes have labels (e.g., "LLM2: Mistral+Instruct", "LLM3: DISTILBART-CNN") that might cause confusion between the logical stage number and the model type being called.
+    *   **The implemented code** utilizes a clearer three-stage LLM pipeline:
+        1.  **LLM1 (Query Refinement):** Uses a model like Mistral-Instruct.
+        2.  **LLM2 (Snippet Summarization):** Uses a model like DistilBART-CNN. This step is applied to snippets from *both* Web Search and PubMed if enabled.
+        3.  **LLM3 (Answer Synthesis):** Uses a model like Mistral-Instruct. This step is performed *separately* for Web Search context and PubMed context to generate distinct answers.
+    *   The diagram's visual flow for synthesis, particularly how "LLM2" and "LLM3" (diamond shapes) and their associated Hugging Face calls relate to the code's summarization vs. synthesis roles, may not perfectly align. For instance, DistilBART-CNN (associated with the diagram's "LLM2" synthesis for web) is typically a summarization model in the code.
+
+*   **"Agent Gore Logic":** This is understood to be a typo for "Agent Core Logic."
+
+*   **MCP Server File Names in Diagram:**
+    *   The diagram incorrectly associates the Web Search server with `pub_search_server.py` in one label; the code correctly uses `web_search_server.py`.
+    *   The PubMed server is correctly `pubmed.search.server.py`.
+
+*   **Unclear Labels:** The label "4b. Formatted Oreta Quesign+ (JSON)" in the diagram is specific to the visual and its precise meaning is inferred as formatted web data.
+
+*   **Return Path from PubMed MCP:** While not explicitly drawn with an arrow like "4b" for web search, the return of formatted results from the PubMed MCP server to the Main Agent is essential and implied for the PubMed synthesis pathway.
+
+**Simplified Interpretation of the Diagram's Overall Intent:**
+
+Despite some labeling inconsistencies between the diagram and the final implemented code, the diagram generally illustrates the following:
+The user's medical question is handled by a Main Agent. This agent may use an LLM to refine the query before retrieving information from Web Search (via DuckDuckGo) and PubMed. The retrieved information is then processed. This processing can involve other LLMs (such as DistilBART-CNN, typically for summarization, and Mistral-Instruct, for synthesis) to generate separate, context-aware answers based on web-derived information and PubMed-derived information. Finally, these distinct answers, along with their sources, are presented to the user. The core concept of a multi-stage process involving multiple LLMs and external data sources is conveyed.
 
 ## Project Structure
 Intra_intel_multi_llm_challenge/
