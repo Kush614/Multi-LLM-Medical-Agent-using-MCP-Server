@@ -227,7 +227,7 @@ The main dependencies are listed in `requirements.txt`:
 
 This README should cover the necessary details for understanding, setting up, and running the project.
 
-## Sample medical questions outpur screenshot
+## Sample medical questions output screenshot
 
 Web search
 ![Web search output](https://github.com/user-attachments/assets/8fe4be5b-df27-439f-bdef-95394f53edab)
