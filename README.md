@@ -226,3 +226,11 @@ The main dependencies are listed in `requirements.txt`:
 *   `python-dotenv`: For managing environment variables.
 
 This README should cover the necessary details for understanding, setting up, and running the project.
+
+## Sample medical questions outpur screenshot
+
+Web search
+![Web search output](https://github.com/user-attachments/assets/8fe4be5b-df27-439f-bdef-95394f53edab)
+
+Pubmed search
+![PubmedSearch Output](https://github.com/user-attachments/assets/e941063a-d7b9-4920-bea9-4e99e44d1fd3)
