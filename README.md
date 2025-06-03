@@ -5,7 +5,8 @@ This project implements a Multi-LLM Agent system in Python designed to answer me
 
 Here’s a high-level flowchart of how the agent processes medical queries:
 
-![Agent Flowchart](intra_intel_multi_llm_challenge\Working Flowchart.png)
+![Flowchart](Working Flowchart.png)
+
 Workflow Stages:
 User Interaction & Initial Query:
 (1. Medical Question): The process starts with the User submitting a medical question.
