@@ -3,13 +3,7 @@
 This project implements a Multi-LLM Agent system in Python designed to answer medical questions. It leverages a custom Model Context Protocol (MCP) to interact with distinct tool servers for information retrieval (Web Search and PubMed Search). The core agent orchestrates multiple free Large Language Models (LLMs) from the Hugging Face Inference API to perform tasks such as query refinement, context snippet summarization, and final answer synthesis using a Retrieval-Augmented Generation (RAG) approach. The system is designed to provide separate, synthesized answers based on the context retrieved from Web Search and PubMed, including links to the original source materials.
 ## System Architecture
 
-Here’s a high-level flowchart of how the agent processes medical queries:
-
-
 ![Working Flowchart](https://github.com/user-attachments/assets/eccde8f8-f6ea-4e9a-954a-65e71c91ee72)
-
-Here’s a high-level flowchart of how the agent processes medical queries:
-
 Workflow Stages:
 User Interaction & Initial Query:
 (1. Medical Question): The process starts with the User submitting a medical question.
@@ -48,6 +42,8 @@ Hugging Face Model Labels:
 This labeling suggests perhaps three types of LLM interactions, but the flow implies specific roles that might be better aligned with the code's LLM1 (Refine), LLM2 (Summarize), LLM3 (Synthesize) structure. For example, DISTILBART-CNN is typically a summarization model. Mistral-Instruct is an instruction-following model good for refinement or synthesis.
 Simplified Interpretation for README based on the Diagram's Visual Flow (acknowledging potential label inconsistencies):
 The diagram shows that the user's medical question initiates a process within the Main Agent. This agent may refine the question using a first LLM (LLM1 via Hugging Face). The query is then sent to MCP servers for Web Search (using DuckDuckGo) and PubMed Search. The results from web search are processed, potentially by another LLM (LLM2, possibly for summarization or initial web-based answer synthesis, using a model like DistilBERT-CNN via Hugging Face). A separate LLM (LLM3, potentially Mistral-Instruct via Hugging Face) takes context from PubMed to generate a PubMed-specific answer. The Main Agent then combines these outputs into a final response for the user, presenting information derived from different sources.
+
+
 
 ## Project Structure
 Intra_intel_multi_llm_challenge/
