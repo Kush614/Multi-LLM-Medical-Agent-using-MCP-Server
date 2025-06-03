@@ -4,7 +4,9 @@ This project implements a Multi-LLM Agent system in Python designed to answer me
 ## System Architecture
 
 ![Working Flowchart](https://github.com/user-attachments/assets/eccde8f8-f6ea-4e9a-954a-65e71c91ee72)
-Workflow Stages as Depicted in the Diagram:
+
+
+# Workflow Stages as Depicted in the Diagram:
 User Interaction & Initial Query:
 (1. Medical Question): The process begins when the User submits a medical question, which is received by the Main Agent.
 Query Processing & Information Retrieval (Agent "Gore" Logic - likely "Core" Logic):
